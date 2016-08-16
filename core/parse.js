@@ -49,10 +49,11 @@ exports.reply = function(session, builder, callback) {
     //5秒待って結果がなければ、固定文言を選んで返す
     setTimeout(function() {
         if (!success) {
+            console.log("umaru!!");
             var unknown_reply = config.unknown;
             var rand = unknown_reply[Math.floor(Math.random() * unknown_reply.length)];
             callback(rand.replace('{text}', val));
         }
         clearTimeout();
-    }, 5000);
+    }, 3000);
 };
