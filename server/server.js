@@ -47,7 +47,7 @@ bot.on('conversationUpdate', function (message) {
 
 bot.dialog('/', function (session) {
     var parse = require('../core/parse');
-    var reply_msg = parse.reply(session, function(msg) {
+    var reply_msg = parse.reply(session, builder, function(msg) {
         session.send(msg);
     });
 });
