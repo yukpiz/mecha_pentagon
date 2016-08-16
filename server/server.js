@@ -45,35 +45,9 @@ bot.on('conversationUpdate', function (message) {
     }
 });
 
-var unknown_reply = [
-    "{text}はわかりません",
-    "{text}(✌＇ｗ＇✌)",
-    "えっ？",
-    "だめでーす",
-    "むりでーす",
-    "いやでーす",
-    "わかりませーん",
-    "未実装♡",
-];
-
 bot.dialog('/', function (session) {
-    // Action of Reply.
-    console.log('Reply Event ---');
-    console.log(session);
-
-    var reply_msg = parse_reply(session.message.text);
-    session.send(reply_msg);
+    var parse = require('../core/parse');
+    var reply_msg = parse.reply(session, function(msg) {
+        session.send(msg);
+    });
 });
-
-function parse_reply(val) {
-    var match = val.match(/^.*うまるちゃん\<\/at\>\s?(.*)/);
-    val = match == null ? val : match[1];
-
-    if (val.match("夢幻") && val.match("攻略")) {
-        return "夢幻ラビの攻略ですっ！<br/>" +
-            "https://docs.google.com/document/d/1tsyiRnAeWUEdx0DGfbu0D5JQz8I0aUlW0SKEkcn7Jz8";
-    }
-
-    var rand = unknown_reply[Math.floor(Math.random() * unknown_reply.length)];
-    return rand.replace('{text}', val);
-}
