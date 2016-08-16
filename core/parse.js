@@ -18,7 +18,8 @@ exports.reply = function(session, callback) {
 
     match = val.match(/エンチャント\s(.*)/);
     if (match) {
-        enchant_word = encodeURIComponent(UnescapeUnicode(EscapeSJIS(match[1])));
+        var ecl = require('../plugins/ecl');
+        enchant_word = ecl.EscapeSJIS(match[1]);
         msg = config.enchant.url.replace('{text}', enchant_word);
         success = true;
         callback(msg);

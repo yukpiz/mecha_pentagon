@@ -4,35 +4,35 @@
 // Copyright (C) http://nurucom-archives.hp.infoseek.co.jp/digital/
 //
 
-EscapeSJIS=function(str){
+exports.EscapeSJIS=function(str){
 	return str.replace(/[^*+.-9A-Z_a-z-]/g,function(s){
 		var c=s.charCodeAt(0),m;
 		return c<128?(c<16?"%0":"%")+c.toString(16).toUpperCase():65376<c&&c<65440?"%"+(c-65216).toString(16).toUpperCase():(c=JCT11280.indexOf(s))<0?"%81E":"%"+((m=((c<8272?c:(c=JCT11280.lastIndexOf(s)))-(c%=188))/188)<31?m+129:m+193).toString(16).toUpperCase()+(64<(c+=c<63?64:65)&&c<91||95==c||96<c&&c<123?String.fromCharCode(c):"%"+c.toString(16).toUpperCase())
 	})
 };
 
-UnescapeSJIS=function(str){
+exports.UnescapeSJIS=function(str){
 	return str.replace(/%(8[1-9A-F]|[9E][0-9A-F]|F[0-9A-C])(%[4-689A-F][0-9A-F]|%7[0-9A-E]|[@-~])|%([0-7][0-9A-F]|A[1-9A-F]|[B-D][0-9A-F])/ig,function(s){
 		var c=parseInt(s.substring(1,3),16),l=s.length;
 		return 3==l?String.fromCharCode(c<160?c:c+65216):JCT11280.charAt((c<160?c-129:c-193)*188+(4==l?s.charCodeAt(3)-64:(c=parseInt(s.substring(4),16))<127?c-64:c-65))
 	})
 };
 
-EscapeEUCJP=function(str){
+exports.EscapeEUCJP=function(str){
 	return str.replace(/[^*+.-9A-Z_a-z-]/g,function(s){
 		var c=s.charCodeAt(0);
 		return (c<128?(c<16?"%0":"%")+c.toString(16):65376<c&&c<65440?"%8E%"+(c-65216).toString(16):(c=JCT8836.indexOf(s))<0?"%A1%A6":"%"+((c-(c%=94))/94+161).toString(16)+"%"+(c+161).toString(16)).toUpperCase()
 	})
 };
 
-UnescapeEUCJP=function(str){
+exports.UnescapeEUCJP=function(str){
 	return str.replace(/(%A[1-9A-F]|%[B-E][0-9A-F]|%F[0-9A-E]){2}|%8E%(A[1-9A-F]|[B-D][0-9A-F])|%[0-7][0-9A-F]/ig,function(s){
 		var c=parseInt(s.substring(1),16);
 		return c<161?String.fromCharCode(c<128?c:parseInt(s.substring(4),16)+65216):JCT8836.charAt((c-161)*94+parseInt(s.substring(4),16)-161)
 	})
 };
 
-EscapeJIS7=function(str){
+exports.EscapeJIS7=function(str){
 	var u=String.fromCharCode,ri=u(92,120,48,48,45,92,120,55,70),rj=u(65377,45,65439,93,43),
 	H=function(c){
 		return 41<c&&c<58&&44!=c||64<c&&c<91||95==c||96<c&&c<123?u(c):"%"+c.toString(16).toUpperCase()
@@ -51,7 +51,7 @@ EscapeJIS7=function(str){
 	}).slice(8,-1)
 };
 
-UnescapeJIS7=function(str){
+exports.UnescapeJIS7=function(str){
 	var i=0,p,q,s="",u=String.fromCharCode,
 	P=("%28B"+str.replace(/%49/g,"I").replace(/%1B%24%4[02]|%1B%24@/ig,"%1B%24B")).split(/%1B/i),
 	I=function(s){
@@ -71,7 +71,7 @@ UnescapeJIS7=function(str){
 	return s
 };
 
-EscapeJIS8=function(str){
+exports.EscapeJIS8=function(str){
 	var u=String.fromCharCode,r=u(92,120,48,48,45,92,120,55,70,65377,45,65439,93,43),
 	H=function(c){
 		return 41<c&&c<58&&44!=c||64<c&&c<91||95==c||96<c&&c<123?u(c):"%"+c.toString(16).toUpperCase()
@@ -88,7 +88,7 @@ EscapeJIS8=function(str){
 	}).slice(8,-1)
 };
 
-UnescapeJIS8=function(str){
+exports.UnescapeJIS8=function(str){
 	var i=0,p,s="",
 	P=("%28B"+str.replace(/%1B%24%4[02]|%1B%24@/ig,"%1B%24B")).split(/%1B/i),
 	I=function(s){
@@ -106,20 +106,20 @@ UnescapeJIS8=function(str){
 	return s
 };
 
-EscapeUnicode=function(str){
+exports.EscapeUnicode=function(str){
 	return str.replace(/[^*+.-9A-Z_a-z-]/g,function(s){
 		var c=s.charCodeAt(0);
 		return (c<16?"%0":c<256?"%":c<4096?"%u0":"%u")+c.toString(16).toUpperCase()
 	})
 };
 
-UnescapeUnicode=function(str){
+exports.UnescapeUnicode=function(str){
 	return str.replace(/%u[0-9A-F]{4}|%[0-9A-F]{2}/ig,function(s){
 		return String.fromCharCode("0x"+s.substring(s.length/3))
 	})
 };
 
-EscapeUTF7=function(str){
+exports.EscapeUTF7=function(str){
 	var B="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".split(""),
 	E=function(s){
 		var c=s.charCodeAt(0);
@@ -133,7 +133,7 @@ EscapeUTF7=function(str){
 	}).slice(0,-1)
 };
 
-UnescapeUTF7=function(str){
+exports.UnescapeUTF7=function(str){
 	var i=0,B={};
 	while(i<64)B["ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(i)]=i++;
 	return str.replace(RegExp("[+][+/-9A-Za-z]*-?","g"),function(s){
@@ -148,21 +148,21 @@ UnescapeUTF7=function(str){
 	})
 };
 
-EscapeUTF8=function(str){
+exports.EscapeUTF8=function(str){
 	return str.replace(/[^*+.-9A-Z_a-z-]/g,function(s){
 		var c=s.charCodeAt(0);
 		return (c<16?"%0"+c.toString(16):c<128?"%"+c.toString(16):c<2048?"%"+(c>>6|192).toString(16)+"%"+(c&63|128).toString(16):"%"+(c>>12|224).toString(16)+"%"+(c>>6&63|128).toString(16)+"%"+(c&63|128).toString(16)).toUpperCase()
 	})
 };
 
-UnescapeUTF8=function(str){
+exports.UnescapeUTF8=function(str){
 	return str.replace(/%(E(0%[AB]|[1-CEF]%[89AB]|D%[89])[0-9A-F]|C[2-9A-F]|D[0-9A-F])%[89AB][0-9A-F]|%[0-7][0-9A-F]/ig,function(s){
 		var c=parseInt(s.substring(1),16);
 		return String.fromCharCode(c<128?c:c<224?(c&31)<<6|parseInt(s.substring(4),16)&63:((c&15)<<6|parseInt(s.substring(4),16)&63)<<6|parseInt(s.substring(7),16)&63)
 	})
 };
 
-EscapeUTF16LE=function(str){
+exports.EscapeUTF16LE=function(str){
 	var H=function(c){
 		return 41<c&&c<58&&44!=c||64<c&&c<91||95==c||96<c&&c<123?String.fromCharCode(c):(c<16?"%0":"%")+c.toString(16).toUpperCase()
 	};
@@ -171,7 +171,7 @@ EscapeUTF16LE=function(str){
 	})
 };
 
-UnescapeUTF16LE=function(str){
+exports.UnescapeUTF16LE=function(str){
 	var u=String.fromCharCode,b=u(92,120,48,48,45,92,120,70,70);
 	return str.replace(/^%FF%FE/i,"").replace(RegExp("%[0-9A-F]{2}%[0-9A-F]{2}|%[0-9A-F]{2}["+b+"]|["+b+"]%[0-9A-F]{2}|["+b+"]{2}","ig"),function(s){
 		var l=s.length;
@@ -179,7 +179,7 @@ UnescapeUTF16LE=function(str){
 	})
 };
 
-GetEscapeCodeType=function(str){
+exports.GetEscapeCodeType=function(str){
 	if(/%u[0-9A-F]{4}/i.test(str))return "Unicode";
 	if(/%([0-9A-DF][0-9A-F]%[8A]0%|E0%80|[0-7][0-9A-F]|C[01])%[8A]0|%00|%[7F]F/i.test(str))return "UTF16LE";
 	if(/%E[0-9A-F]%[8A]0%[8A]0|%[CD][0-9A-F]%[8A]0/i.test(str))return "UTF8";
