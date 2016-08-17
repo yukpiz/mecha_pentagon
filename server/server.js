@@ -46,8 +46,10 @@ bot.on('conversationUpdate', function (message) {
 });
 
 bot.dialog('/', function (session) {
+    console.log(session);
     var parse = require('../core/parse');
     var reply_msg = parse.reply(session, builder, function(msg) {
+        console.log(msg);
         session.send(msg);
     });
 });
