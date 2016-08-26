@@ -1,0 +1,9 @@
+#/bin/bash
+
+cd /home/yukpiz/labo/repos/private/mecha_pentagon
+while true
+do
+    node ./crawler/trade.js
+    sleep 15
+done
+
