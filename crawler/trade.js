@@ -22,6 +22,7 @@ db.open(function() {
                     '　' + feed.summary + '<br/>' +
                     '　' + feed.link;
                 var bot = require('../core/bot');
+                console.log(msg);
                 bot.say(trade.group_id, msg);
             }
             db.collection('mabinogi_feed').update({link: feed.link}, {$set: {checked: true}});
