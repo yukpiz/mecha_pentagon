@@ -56,7 +56,10 @@ bot.dialog('/', function (session) {
     console.log(session.message.address.bot);
 
     var parse = require('../core/parse');
+    parse.success = false;
     var reply_msg = parse.reply(session, builder, function(msg) {
+        if (parse.success) return;
+        parse.success = true;
         console.log(msg);
         session.send(msg);
     });
