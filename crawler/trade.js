@@ -23,6 +23,7 @@ db.open(function() {
                     '　' + feed.link;
                 var bot = require('../core/bot');
                 console.log(msg);
+                console.log('GROUP ID: ' + trade.group_id);
                 bot.say(trade.group_id, msg);
             }
             db.collection('mabinogi_feed').update({link: feed.link}, {$set: {checked: true}});
@@ -59,12 +60,13 @@ function save_db(err, res, body) {
             var ecl = require('../plugins/ecl');
             doc = {
                 title: $('.detail-title-txt').html(),
-                summary: $('#detail-main > p').html().replace(/\r\n|\t+/g, ''),
+                summary: $('#detail-main > p').html().replace(/\r\n|\t+/g, '').replace(/\<center\>.*\<\/center\>/g, '').replace(/\<br\>/g, '<br/>'),
                 username: $('#contributor-name').html(),
                 date: $('#contributor-date').html(),
                 link: res.request.uri.href,
                 checked: false,
             };
+            console.log($('.detail-title-txt').html());
             collection.insert(doc, function() {
                 article_counter++;
                 insert_counter++;

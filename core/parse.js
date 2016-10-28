@@ -9,12 +9,12 @@ exports.reply = function(session, builder, callback) {
     var config = yaml.load('config.yml');
 
     //ヘルプ表示
-    config.matches.help.forEach(function(r) {
-        var reg = new RegExp(r);
-        if (val.match(reg)) {
-            callback(config.help);
-        }
-    });
+    //config.matches.help.forEach(function(r) {
+    //    var reg = new RegExp(r);
+    //    if (val.match(reg)) {
+    //        callback(config.help);
+    //    }
+    //});
 
     //空リプ
     if (val.trim().length == 0) {

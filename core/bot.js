@@ -4,6 +4,10 @@ exports.builder = builder;
 var fs = require('fs');
 var serialize = require('node-serialize');
 
+var logger = require('../core/logger');
+
+//var logger = require('../core/logger');
+
 var yaml = require('yamljs');
 config = yaml.load('config.yml');
 
@@ -19,6 +23,16 @@ var bot = new builder.UniversalBot(connector);
 exports.bot = bot;
 
 bot.on('conversationUpdate', function (message) {
+    // WebChat Wakeup
+    if (message.address.channelId === 'webchat') {
+        var reply = new builder.Message()
+            .address(message.address)
+            .text(
+                    "You can leave a feel free to comment:) \n" +
+                    "コメントを残せます(｡･･｡)"
+                );
+        bot.send(reply);
+    }
     // Add Members of Group.
     if (message.address.conversation.isGroup && message.membersAdded) {
         message.membersAdded.forEach(function(identity) {
@@ -44,6 +58,10 @@ bot.dialog('/', function (session) {
         fs.writeSync(fd, session_str, 0, 'utf8');
         fs.closeSync(fd);
     }
+
+    logger.comment.info('Channel: ' + session.message.address.channelId);
+    logger.comment.info(' => UserName: ' + session.message.address.user.name);
+    logger.comment.info(' => Message: ' + session.message.text);
 
     //Debug Log
     console.log('--- session.message.address ----------------');
@@ -84,5 +102,6 @@ exports.say = function(id, text, attachments) {
         new builder.Message()
             .address(address)
             .text(text);
+    console.log(session_str);
     bot.send(message);
 }

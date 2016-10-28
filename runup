@@ -1,4 +1,4 @@
 #!/bin/sh
 
 screen -AmdS mecha_pentagon node server/server.js
-screen -AmdS mecha_pentagon_crawler crawler/crawler
+#screen -AmdS mecha_pentagon_crawler crawler/crawler
