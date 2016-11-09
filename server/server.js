@@ -7,9 +7,13 @@ var https_options = {
 };
 
 var server = restify.createServer(https_options);
+server.use(restify.bodyParser());
 server.listen(process.env.port || process.env.PORT || 8081, function () {
    console.log('%s listening to %s', server.name, server.url); 
 });
 
-var bot = require('../core/bot');
-server.post('/api/messages', bot.connector.listen());
+var skype_bot = require('../skype/bot');
+server.post('/api/messages', skype_bot.connector.listen());
+
+var line_bot = require('../line/bot');
+server.post('/line/api/messages', line_bot.receive);

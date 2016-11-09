@@ -59,9 +59,25 @@ bot.dialog('/', function (session) {
         fs.closeSync(fd);
     }
 
-    logger.comment.info('Channel: ' + session.message.address.channelId);
-    logger.comment.info(' => UserName: ' + session.message.address.user.name);
-    logger.comment.info(' => Message: ' + session.message.text);
+    if (session.message.address.channelId === 'webchat') {
+        var twitter = require('twitter');
+        console.log(process.env.TWITTER_CONSUMER_KEY);
+        var client = new twitter({
+            consumer_key: process.env.TWITTER_CONSUMER_KEY,
+            consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+            access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
+            access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+        });
+        notice_msg = "@yuckmb WebChatからメッセージが届きました！\n" + 
+            "Message => " + session.message.text;
+        client.post('statuses/update', {status: notice_msg}, function(error, tweet, response) {
+            if (error) throw error;
+            console.log(tweet);
+        });
+        logger.comment.info('Channel: ' + session.message.address.channelId);
+        logger.comment.info(' => UserName: ' + session.message.address.user.name);
+        logger.comment.info(' => Message: ' + session.message.text);
+    }
 
     //Debug Log
     console.log('--- session.message.address ----------------');
@@ -73,7 +89,7 @@ bot.dialog('/', function (session) {
     console.log('--- session.message.address.bot ------------');
     console.log(session.message.address.bot);
 
-    var parse = require('../core/parse');
+    var parse = require('../skype/parse');
     parse.success = false;
     var reply_msg = parse.reply(session, builder, function(msg) {
         if (parse.success) return;
