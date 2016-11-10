@@ -12,6 +12,7 @@ exports.reply = function(e) {
 			var words = new Array();
 			res.forEach(function(a) {
 				if (a[1] == '名詞' || a[1] == '感動詞') {
+					if (words.indexOf(a[0]) >= 0) return;
 					words.push(a[0]);
 					collection.find({ word: a[0] }).count(function(err, c) {
 						if (c != 0) return;
@@ -20,7 +21,6 @@ exports.reply = function(e) {
 							reply: [],
 						}, function() {
 							console.log('Saved: ' + a[0]);
-							db.close();
 						});
 					});
 				}

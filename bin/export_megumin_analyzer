@@ -1,0 +1,3 @@
+#!/bin/bash
+
+mongoexport -d mecha_pentagon -c megumin_analyzer -out megumin_analyzer.csv --csv --fields word

@@ -3,3 +3,4 @@ config.yml
 *.swp
 *.log
 sessions/*
+*.csv
