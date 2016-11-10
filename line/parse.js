@@ -1,4 +1,7 @@
+var replyed = false;
+
 exports.reply = function(e) {
+	replyed = false;
 	var message = e.message.text;
 
 	var MeCab = new require('mecab-async');
@@ -25,7 +28,6 @@ exports.reply = function(e) {
 			m = message.match(/^\!add\s[\"|\'](.*)[\"|\']\s[\"|\'](.*)[\"|\']/);
 			if (m) {
 				collection.find({word:m[1]}).count(function(err, c) {
-					console.log(c);
 					if (c == 0) {
 						//Insert
 						collection.insert({word:m[1], reply:[m[2]]}, function() {
@@ -49,6 +51,13 @@ exports.reply = function(e) {
 				return
 			}
 
+			collection.findOne({word:message}, function(err, doc) {
+				if (doc.reply.length == 0) return;
+				var random_reply = doc.reply[Math.floor(Math.random() * doc.reply.length)];
+				send(e.replyToken, random_reply);
+				return;
+			});
+
 			var words = new Array();
 			res.forEach(function(a) {
 				if (a[1] == '名詞' || a[1] == '感動詞') {
@@ -71,6 +80,7 @@ exports.reply = function(e) {
 				if (doc.reply.length == 0) return;
 				var random_reply = doc.reply[Math.floor(Math.random() * doc.reply.length)];
 				send(e.replyToken, random_reply);
+				return;
 			});
 		});
 	});
@@ -78,6 +88,8 @@ exports.reply = function(e) {
 
 exports.send = send;
 function send(token, message) {
+	if (replyed) return;
+	replyed = true;
 	var yaml = require('yamljs');
 	var config = yaml.load('config.yml');
 
