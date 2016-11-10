@@ -6,10 +6,10 @@ exports.reply = function(e) {
 	MeCab.command = 'mecab -d /usr/lib/mecab/dic/mecab-ipadic-neologd';
 	mecab.parse(message, function(err, res) {
 		console.log(res);
-        var mongo = require('../core/mongodb');
+		var mongo = require('../core/mongodb');
 		db = mongo.initDb();
 		db.open(function() {
-            var collection = db.collection('megumin_analyzer');
+			var collection = db.collection('megumin_analyzer');
 			var words = new Array();
 			res.forEach(function(a) {
 				if (a[1] == '名詞' || a[1] == '感動詞') {
@@ -27,45 +27,56 @@ exports.reply = function(e) {
 				}
 			});
 
+			m = message.match(/[v|V]ersion/);
+			if (m) {
+				collection.find({}).count(function(err, c) {
+					reply_message =
+						'AI CODE: mecha_pentagon::megumin_analyzer\n' +
+						'  https://github.com/yukpiz/mecha_pentagon\n' +
+						'  今の単語数は ' + c + ' 件です！';
+					send(e.replyToken, reply_message);
+				});
+				return;
+			}
+
 			var random_word = words[Math.floor(Math.random() * words.length)];
 			collection.findOne({ word: random_word }, function(err, doc) {
 				if (doc.reply.length == 0) return;
 				var random_reply = doc.reply[Math.floor(Math.random() * doc.reply.length)];
-				console.log(random_reply);
-				var yaml = require('yamljs');
-				var config = yaml.load('config.yml');
-
-				var request = require('request');
-				var headers = {
-					'Content-Type': 'application/json',
-					'Authorization': config.line.access_token,
-				};
-
-				var options = {
-					url: config.line.url.reply,
-					method: 'POST',
-					headers: headers,
-					json: true,
-					body: JSON.stringify({
-						'replyToken': e.replyToken,
-						'messages': [
-							{
-								'type': 'text',
-								'text': random_reply,
-							},
-						],
-					}),
-				};
-
-				request(options, function(err, res, body) {
-					console.log(body);
-				});
+				send(e.replyToken, random_reply);
 			});
 		});
 	});
 }
 
-function match0(message) {
-	m = message.match(/はじめまして/);
-	return m ? true : false;
+exports.send = send;
+function send(token, message) {
+	var yaml = require('yamljs');
+	var config = yaml.load('config.yml');
+
+	var request = require('request');
+	var headers = {
+		'Content-Type': 'application/json',
+		'Authorization': config.line.access_token,
+	};
+
+	var options = {
+		url: config.line.url.reply,
+		method: 'POST',
+		headers: headers,
+		json: true,
+		body: JSON.stringify({
+			'replyToken': token,
+			'messages': [
+				{
+					'type': 'text',
+					'text': message,
+				},
+			],
+		}),
+	};
+
+	request(options, function(err, res, body) {
+		console.log(body);
+	});
 }
