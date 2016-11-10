@@ -3,6 +3,7 @@ exports.reply = function(e) {
 
 	var MeCab = new require('mecab-async');
 	var mecab = new MeCab();
+	MeCab.command = 'mecab -d /usr/lib/mecab/dic/mecab-ipadic-neologd';
 	mecab.parse(message, function(err, res) {
 		console.log(res);
         var mongo = require('../core/mongodb');
